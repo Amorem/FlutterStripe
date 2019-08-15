@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login_page.dart';
 import 'products_page.dart';
@@ -152,6 +153,7 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         _isSubmitting = false;
       });
+      _storeUserData(responseData);
       _showSuccessSnack();
       _redirectUser();
     } else {
@@ -161,6 +163,13 @@ class _RegisterPageState extends State<RegisterPage> {
         _showErrorSnack(errorMsg);
       });
     }
+  }
+
+  Future<void> _storeUserData(responseData) async {
+    final prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> user = responseData['user'];
+    user.putIfAbsent('jwt', () => responseData['jwt']);
+    prefs.setString('user', json.encode(user));
   }
 
   void _showSuccessSnack() {
@@ -187,7 +196,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _redirectUser() {
     Future.delayed(
-        Duration(seconds: 3),
+        Duration(seconds: 2),
         () =>
             Navigator.of(context).pushReplacementNamed(ProductsPage.routeName));
   }
