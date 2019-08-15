@@ -1,0 +1,21 @@
+{
+  "defaultConnection": "default",
+  "connections": {
+    "default": {
+      "connector": "strapi-hook-mongoose",
+      "settings": {
+        "client": "mongo",
+        "host": "flutterstripe-agxvq.mongodb.net",
+        "port": 27017,
+        "database": "server",
+        "username": "admin",
+        "password": "admin",
+        "srv": true
+      },
+      "options": {
+        "authenticationDatabase": "admin",
+        "ssl": true
+      }
+    }
+  }
+}
