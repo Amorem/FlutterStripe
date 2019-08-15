@@ -1,42 +1,21 @@
 import 'package:flutter/material.dart';
 
-import 'login_page.dart';
+import 'register_page.dart';
 
-class RegisterPage extends StatefulWidget {
-  static const routeName = '/register';
-
+class LoginPage extends StatefulWidget {
+  static const routeName = '/login';
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>(); // Identify uniquely the form state
 
-  String _userName,
-      _email,
-      _password; // We declare all the variables in 1 line :-)
+  String _email, _password;
 
   Widget _showTitle() => Text(
-        'Register',
+        'Login',
         style: Theme.of(context).textTheme.headline,
-      );
-
-  Widget _showUserNameInput() => Padding(
-        padding: EdgeInsets.only(top: 40),
-        child: TextFormField(
-          validator: (value) =>
-              value.length < 6 ? 'Username too short !' : null,
-          onSaved: (value) => _userName = value,
-          decoration: InputDecoration(
-            labelText: 'Username',
-            hintText: 'Enter username (min length 6)',
-            icon: Icon(
-              Icons.face,
-              color: Colors.grey,
-            ),
-            border: OutlineInputBorder(),
-          ),
-        ),
       );
 
   Widget _showEmailInput() => Padding(
@@ -93,13 +72,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   Radius.circular(10.0),
                 ),
               ),
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).accentColor,
               onPressed: _submit,
             ),
             FlatButton(
-              child: Text('Existing user ? Login'),
+              child: Text('New user ? Register'),
               onPressed: () => Navigator.of(context)
-                  .pushReplacementNamed(LoginPage.routeName),
+                  .pushReplacementNamed(RegisterPage.routeName),
             )
           ],
         ),
@@ -116,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Register"),
+        title: Text("Login"),
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -127,7 +106,6 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 children: <Widget>[
                   _showTitle(),
-                  _showUserNameInput(),
                   _showEmailInput(),
                   _showPasswordInput(),
                   _showFormActions(),
