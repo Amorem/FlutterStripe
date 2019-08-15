@@ -6,6 +6,12 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>(); // Identify uniquely the form state
+
+  String _userName,
+      _email,
+      _password; // We declare all the variables in 1 line :-)
+
   Widget _showTitle() => Text(
         'Register',
         style: Theme.of(context).textTheme.headline,
@@ -14,6 +20,9 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _showUserNameInput() => Padding(
         padding: EdgeInsets.only(top: 40),
         child: TextFormField(
+          validator: (value) =>
+              value.length < 6 ? 'Username too short !' : null,
+          onSaved: (value) => _userName = value,
           decoration: InputDecoration(
             labelText: 'Username',
             hintText: 'Enter username (min length 6)',
@@ -29,6 +38,8 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _showEmailInput() => Padding(
         padding: EdgeInsets.only(top: 20),
         child: TextFormField(
+          validator: (value) => !value.contains('@') ? 'Invalid email' : null,
+          onSaved: (value) => _email = value,
           decoration: InputDecoration(
             labelText: 'Email',
             hintText: 'Enter a valid email',
@@ -44,6 +55,9 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _showPasswordInput() => Padding(
         padding: EdgeInsets.only(top: 20),
         child: TextFormField(
+          validator: (value) =>
+              value.length < 6 ? 'Password too short !' : null,
+          onSaved: (value) => _password = value,
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'Password',
@@ -76,7 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               color: Theme.of(context).primaryColor,
-              onPressed: () {},
+              onPressed: _submit,
             ),
             FlatButton(
               child: Text('Existing user ? Login'),
@@ -85,6 +99,13 @@ class _RegisterPageState extends State<RegisterPage> {
           ],
         ),
       );
+
+  void _submit() {
+    final form = _formKey.currentState;
+    if (form.validate()) {
+      form.save();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +118,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Center(
           child: SingleChildScrollView(
             child: Form(
+              key: _formKey,
               child: Column(
                 children: <Widget>[
                   _showTitle(),
