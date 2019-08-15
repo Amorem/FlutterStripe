@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'products_page.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,8 +14,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>(); // Identify uniquely the form state
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool _obscureText = true;
+  bool _isSubmitting = false;
 
   String _email, _password;
 
@@ -71,23 +77,28 @@ class _LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.only(top: 40),
         child: Column(
           children: <Widget>[
-            RaisedButton(
-              child: Text(
-                'Submit',
-                style: Theme.of(context)
-                    .textTheme
-                    .body1
-                    .copyWith(color: Colors.black),
-              ),
-              elevation: 8.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10.0),
-                ),
-              ),
-              color: Theme.of(context).accentColor,
-              onPressed: _submit,
-            ),
+            _isSubmitting
+                ? CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation(Theme.of(context).accentColor),
+                  )
+                : RaisedButton(
+                    child: Text(
+                      'Submit',
+                      style: Theme.of(context)
+                          .textTheme
+                          .body1
+                          .copyWith(color: Colors.black),
+                    ),
+                    elevation: 8.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
+                      ),
+                    ),
+                    color: Theme.of(context).accentColor,
+                    onPressed: _submit,
+                  ),
             FlatButton(
               child: Text('New user ? Register'),
               onPressed: () => Navigator.of(context)
@@ -101,12 +112,67 @@ class _LoginPageState extends State<LoginPage> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
+      _loginUser();
     }
+  }
+
+  Future<void> _loginUser() async {
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    http.Response response = await http.post('http://localhost:1337/auth/local',
+        body: {'identifier': _email, 'password': _password});
+
+    final responseData = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _isSubmitting = false;
+      });
+      _showSuccessSnack();
+      _redirectUser();
+    } else {
+      setState(() {
+        _isSubmitting = false;
+        final String errorMsg = responseData['message'];
+        _showErrorSnack(errorMsg);
+      });
+    }
+  }
+
+  void _showSuccessSnack() {
+    final snackbar = SnackBar(
+      content: Text(
+        'Successfully logged in',
+        style: TextStyle(color: Colors.green),
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+    _formKey.currentState.reset();
+  }
+
+  void _showErrorSnack(String errorMessage) {
+    final snackbar = SnackBar(
+      content: Text(
+        errorMessage,
+        style: TextStyle(color: Colors.red),
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+  }
+
+  void _redirectUser() {
+    Future.delayed(
+        Duration(seconds: 3),
+        () =>
+            Navigator.of(context).pushReplacementNamed(ProductsPage.routeName));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text("Login"),
       ),
