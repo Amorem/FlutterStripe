@@ -141,15 +141,26 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       _isSubmitting = true;
     });
+
     http.Response response = await http.post(
         'http://localhost:1337/auth/local/register',
         body: {'username': _userName, 'email': _email, 'password': _password});
+
     final responseData = json.decode(response.body);
-    setState(() {
-      _isSubmitting = false;
-    });
-    _showSuccessSnack();
-    _redirectUser();
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _isSubmitting = false;
+      });
+      _showSuccessSnack();
+      _redirectUser();
+    } else {
+      setState(() {
+        _isSubmitting = false;
+        final String errorMsg = responseData['message'];
+        _showErrorSnack(errorMsg);
+      });
+    }
   }
 
   void _showSuccessSnack() {
@@ -161,6 +172,17 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     _scaffoldKey.currentState.showSnackBar(snackbar);
     _formKey.currentState.reset();
+  }
+
+  void _showErrorSnack(String errorMessage) {
+    final snackbar = SnackBar(
+      content: Text(
+        errorMessage,
+        style: TextStyle(color: Colors.red),
+      ),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackbar);
+    //throw Exception('Error registering new user: $errorMessage');
   }
 
   void _redirectUser() {
