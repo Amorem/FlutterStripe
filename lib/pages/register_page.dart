@@ -12,6 +12,8 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>(); // Identify uniquely the form state
 
+  bool _obscureText = true;
+
   String _userName,
       _email,
       _password; // We declare all the variables in 1 line :-)
@@ -62,13 +64,24 @@ class _RegisterPageState extends State<RegisterPage> {
           validator: (value) =>
               value.length < 6 ? 'Password too short !' : null,
           onSaved: (value) => _password = value,
-          obscureText: true,
+          obscureText: _obscureText,
           decoration: InputDecoration(
             labelText: 'Password',
             hintText: 'Enter password (min length 6)',
             icon: Icon(
               Icons.lock,
               color: Colors.grey,
+            ),
+            suffixIcon: GestureDetector(
+              child: Icon(
+                _obscureText ? Icons.visibility : Icons.visibility_off,
+                color: Colors.grey,
+              ),
+              onTap: () {
+                setState(() {
+                  _obscureText = !_obscureText;
+                });
+              },
             ),
             border: OutlineInputBorder(),
           ),
