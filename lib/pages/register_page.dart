@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'login_page.dart';
 
@@ -122,7 +124,16 @@ class _RegisterPageState extends State<RegisterPage> {
     final form = _formKey.currentState;
     if (form.validate()) {
       form.save();
+      _registerUser();
     }
+  }
+
+  Future<void> _registerUser() async {
+    http.Response response = await http.post(
+        'http://localhost:1337/auth/local/register',
+        body: {'username': _userName, 'email': _email, 'password': _password});
+    final responseData = json.decode(response.body);
+    print(responseData);
   }
 
   @override
