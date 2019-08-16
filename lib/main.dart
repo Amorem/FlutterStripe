@@ -39,16 +39,14 @@ class MyApp extends StatelessWidget {
             body1: TextStyle(fontSize: 18.0),
           ),
         ),
-        home: RegisterPage(),
         routes: {
-          LoginPage.routeName: (BuildContext context) => LoginPage(),
-          RegisterPage.routeName: (BuildContext context) => RegisterPage(),
-          ProductsPage.routeName: (BuildContext context) =>
-              ProductsPage(onInit: () {
+          "/": (BuildContext context) => ProductsPage(onInit: () {
                 // dispatch an action (getUserAction) to grab user data
                 StoreProvider.of<AppState>(context).dispatch(getUserAction);
                 StoreProvider.of<AppState>(context).dispatch(getProductsAction);
               }),
+          LoginPage.routeName: (BuildContext context) => LoginPage(),
+          RegisterPage.routeName: (BuildContext context) => RegisterPage(),
         },
       ),
     );
