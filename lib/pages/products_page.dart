@@ -66,17 +66,27 @@ class _ProductsPageState extends State<ProductsPage> {
     return Scaffold(
       appBar: _appBar,
       body: Container(
-        decoration: gradientBackground,
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Text("Product Pages"),
-              ],
-            ),
-          ],
-        ),
-      ),
+          decoration: gradientBackground,
+          child: StoreConnector<AppState, AppState>(
+              converter: (store) => store.state,
+              builder: (_, state) => Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: SafeArea(
+                          top: false,
+                          bottom: false,
+                          child: GridView.builder(
+                            itemCount: state.products.length,
+                            itemBuilder: (context, index) =>
+                                Text(state.products[index]['name']),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2),
+                          ),
+                        ),
+                      )
+                    ],
+                  ))),
     );
   }
 }
