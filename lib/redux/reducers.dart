@@ -6,7 +6,8 @@ import '../models/user.dart';
 AppState appReducer(AppState state, dynamic action) {
   return AppState(
       user: userReducer(state.user, action),
-      products: productsReducer(state.products, action));
+      products: productsReducer(state.products, action),
+      cartProducts: cartProductsReducer(state.cartProducts, action));
 }
 
 User userReducer(User user, dynamic action) {
@@ -23,4 +24,11 @@ List<Product> productsReducer(List<Product> products, dynamic action) {
     return action.products;
   }
   return products;
+}
+
+List<Product> cartProductsReducer(List<Product> cartProducts, dynamic action) {
+  if (action is ToggleCartProductAction) {
+    return action.cartProducts;
+  }
+  return cartProducts;
 }

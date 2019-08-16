@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_stripe/models/app_state.dart';
+import 'package:flutter_stripe/widgets/product_item.dart';
 
 class CartPage extends StatefulWidget {
   static const routeName = '/cart';
@@ -8,7 +11,31 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   Widget _cartTab() {
-    return (Text('Cart'));
+    final Orientation orientation = MediaQuery.of(context).orientation;
+    return StoreConnector<AppState, AppState>(
+      converter: (store) => store.state,
+      builder: (_, state) => Column(
+        children: <Widget>[
+          Expanded(
+            child: SafeArea(
+              top: false,
+              bottom: false,
+              child: GridView.builder(
+                itemCount: state.cartProducts.length,
+                itemBuilder: (context, index) =>
+                    ProductItem(item: state.cartProducts[index]),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
+                    mainAxisSpacing: 4.0,
+                    crossAxisSpacing: 4.0,
+                    childAspectRatio:
+                        orientation == Orientation.portrait ? 1.0 : 1.3),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _cardsTab() {
