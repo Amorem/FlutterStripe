@@ -22,7 +22,10 @@ class ProductItem extends StatelessWidget {
         ),
       ),
       child: GridTile(
-        child: Image.network(pictureUrl, fit: BoxFit.cover),
+        child: Hero(
+          tag: item.id,
+          child: Image.network(pictureUrl, fit: BoxFit.cover),
+        ),
         footer: GridTileBar(
           title: FittedBox(
             fit: BoxFit.scaleDown,

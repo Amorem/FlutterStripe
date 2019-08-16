@@ -22,11 +22,14 @@ class ProductDetailPage extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(bottom: 10.0),
-              child: Image.network(
-                pictureUrl,
-                fit: BoxFit.cover,
-                width: orientation == Orientation.portrait ? 600 : 250,
-                height: orientation == Orientation.portrait ? 400 : 200,
+              child: Hero(
+                tag: item.id,
+                child: Image.network(
+                  pictureUrl,
+                  fit: BoxFit.cover,
+                  width: orientation == Orientation.portrait ? 600 : 250,
+                  height: orientation == Orientation.portrait ? 400 : 200,
+                ),
               ),
             ),
             Text(
