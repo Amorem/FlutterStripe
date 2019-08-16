@@ -1,9 +1,7 @@
 'use strict';
 
-const axios = require('axios');
-
 /**
- * Lifecycle callbacks for the `User` model.
+ * Lifecycle callbacks for the `Cart` model.
  */
 
 module.exports = {
@@ -31,14 +29,11 @@ module.exports = {
   // afterFetch: async (model, result) => {},
 
   // Before creating a value.
-  // Fired before `insert` query.
-  beforeCreate: async model => {
-    const cart = await axios.post('http://localhost:1337/carts');
-    model.set('cart_id', cart.data.id);
-  }
+  // Fired before an `insert` query.
+  // beforeCreate: async (model) => {},
 
   // After creating a value.
-  // Fired after `insert` query.
+  // Fired after an `insert` query.
   // afterCreate: async (model, result) => {},
 
   // Before updating a value.
