@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import '../models/app_state.dart';
 
+import '../widgets/product_item.dart';
+
 final gradientBackground = BoxDecoration(
   gradient: LinearGradient(
     begin: Alignment.bottomLeft,
@@ -78,7 +80,7 @@ class _ProductsPageState extends State<ProductsPage> {
                           child: GridView.builder(
                             itemCount: state.products.length,
                             itemBuilder: (context, index) =>
-                                Text(state.products[index]['name']),
+                                ProductItem(item: state.products[index]),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 2),
