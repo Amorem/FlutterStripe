@@ -1,5 +1,6 @@
 import './actions.dart';
 import '../models/app_state.dart';
+import '../models/product.dart';
 import '../models/user.dart';
 
 AppState appReducer(AppState state, dynamic action) {
@@ -15,7 +16,7 @@ User userReducer(User user, dynamic action) {
   return user;
 }
 
-productsReducer(products, action) {
+List<Product> productsReducer(List<Product> products, dynamic action) {
   if (action is GetProductsAction) {
     return action.products;
   }

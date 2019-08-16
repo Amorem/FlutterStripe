@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_stripe/models/product.dart';
 
 import '../models/app_state.dart';
 
 class ProductItem extends StatelessWidget {
-  final dynamic item;
+  final Product item;
 
   ProductItem({this.item});
 
   @override
   Widget build(BuildContext context) {
-    final String pictureUrl = 'http://localhost:1337${item['picture']['url']}';
+    final String pictureUrl = 'http://localhost:1337${item.picture['url']}';
     return GridTile(
       child: Image.network(pictureUrl, fit: BoxFit.cover),
       footer: GridTileBar(
@@ -18,12 +19,12 @@ class ProductItem extends StatelessWidget {
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,
           child: Text(
-            item['name'],
+            item.name,
             style: TextStyle(fontSize: 20.0),
           ),
         ),
         subtitle: Text(
-          '\$${item['price']}',
+          '\$${item.price}',
           style: TextStyle(fontSize: 16.0),
         ),
         trailing: StoreConnector<AppState, AppState>(

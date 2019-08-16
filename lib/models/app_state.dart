@@ -1,9 +1,12 @@
 import 'package:meta/meta.dart';
 
+import 'product.dart';
+import 'user.dart';
+
 @immutable
 class AppState {
-  final dynamic user;
-  final List<dynamic> products;
+  final User user;
+  final List<Product> products;
 
   AppState({@required this.user, @required this.products});
 
