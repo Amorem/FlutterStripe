@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:flutter_stripe/pages/register_page.dart';
 
 import '../models/app_state.dart';
 import '../redux/actions.dart';
 import '../widgets/product_item.dart';
+import 'cart_page.dart';
+import 'register_page.dart';
 
 final gradientBackground = BoxDecoration(
   gradient: LinearGradient(
@@ -58,7 +59,13 @@ class _ProductsPageState extends State<ProductsPage> {
                           Navigator.pushNamed(context, RegisterPage.routeName),
                     ),
             ),
-            leading: state.user != null ? Icon(Icons.store) : Text(''),
+            leading: state.user != null
+                ? IconButton(
+                    icon: Icon(Icons.store),
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed(CartPage.routeName),
+                  )
+                : Text(''),
             actions: <Widget>[
               Padding(
                 padding: EdgeInsets.only(right: 12.0),

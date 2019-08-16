@@ -5,6 +5,7 @@ import 'package:redux_logging/redux_logging.dart';
 import 'package:redux_thunk/redux_thunk.dart';
 
 import 'models/app_state.dart';
+import 'pages/cart_page.dart';
 import 'pages/login_page.dart';
 import 'pages/products_page.dart';
 import 'pages/register_page.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
               }),
           LoginPage.routeName: (BuildContext context) => LoginPage(),
           RegisterPage.routeName: (BuildContext context) => RegisterPage(),
+          CartPage.routeName: (BuildContext context) => CartPage(),
         },
       ),
     );
