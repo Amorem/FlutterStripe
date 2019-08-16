@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:badges/badges.dart';
 
 import '../models/app_state.dart';
 import '../redux/actions.dart';
@@ -59,13 +60,21 @@ class _ProductsPageState extends State<ProductsPage> {
                           Navigator.pushNamed(context, RegisterPage.routeName),
                     ),
             ),
-            leading: state.user != null
-                ? IconButton(
-                    icon: Icon(Icons.store),
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed(CartPage.routeName),
-                  )
-                : Text(''),
+            leading: Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: state.user != null
+                  ? Badge(
+                      badgeContent: Text('${state.cartProducts.length}'),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.store,
+                        ),
+                        onPressed: () =>
+                            Navigator.of(context).pushNamed(CartPage.routeName),
+                      ),
+                    )
+                  : Text(''),
+            ),
             actions: <Widget>[
               Padding(
                 padding: EdgeInsets.only(right: 12.0),
@@ -74,12 +83,15 @@ class _ProductsPageState extends State<ProductsPage> {
                     return () => store.dispatch(logoutUserAction);
                   },
                   builder: (_, callback) {
-                    return state.user != null
-                        ? IconButton(
-                            icon: Icon(Icons.exit_to_app),
-                            onPressed: callback,
-                          )
-                        : Text('');
+                    return Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: state.user != null
+                          ? IconButton(
+                              icon: Icon(Icons.exit_to_app),
+                              onPressed: callback,
+                            )
+                          : Text(''),
+                    );
                   },
                 ),
               )
