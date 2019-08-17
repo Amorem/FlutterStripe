@@ -5,11 +5,21 @@ import 'package:flutter_stripe/widgets/product_item.dart';
 
 class CartPage extends StatefulWidget {
   static const routeName = '/cart';
+
+  final void Function() onInit;
+
+  CartPage({this.onInit});
+
   @override
   _CartPageState createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
+  void initState() {
+    super.initState();
+    widget.onInit();
+  }
+
   Widget _cartTab() {
     final Orientation orientation = MediaQuery.of(context).orientation;
     return StoreConnector<AppState, AppState>(

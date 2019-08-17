@@ -55,7 +55,6 @@ class GetProductsAction {
 }
 
 /* Cart Products Actions */
-
 ThunkAction<AppState> toggleCartProductAction(Product cartProduct) {
   return (Store<AppState> store) async {
     final List<Product> cartProducts = store.state.cartProducts;
@@ -108,3 +107,12 @@ class GetCartProductsAction {
   List<Product> get cartProducts => this._cartProducts;
   GetCartProductsAction(this._cartProducts);
 }
+
+/* Card Actions */
+ThunkAction<AppState> getCardsAction = (Store<AppState> store) async {
+  final String customerId = store.state.user.customerId;
+  http.Response response =
+      await http.get('http://localhost:1337/card?$customerId');
+  final responseData = json.decode(response.body);
+  print(responseData);
+};
