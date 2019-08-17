@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:http/http.dart' as http;
-import 'package:stripe_payment/stripe_payment.dart';
+//import 'package:stripe_payment/stripe_payment.dart';
 
 import '../models/app_state.dart';
 import '../models/user.dart';
@@ -27,7 +27,7 @@ class _CartPageState extends State<CartPage> {
   void initState() {
     super.initState();
     widget.onInit();
-    StripeSource.setPublishableKey('pk_test_6FTOvxXVJH9h3yyPI7ZT4Kki');
+    //StripeSource.setPublishableKey('pk_test_6FTOvxXVJH9h3yyPI7ZT4Kki');
   }
 
   Widget _cartTab() {
@@ -85,31 +85,31 @@ class _CartPageState extends State<CartPage> {
               Padding(
                 padding: EdgeInsets.only(top: 10.0),
               ),
-              RaisedButton(
-                onPressed: () async {
-                  final String cardToken = await StripeSource.addSource();
-                  final card = await _addCard(cardToken);
+              // RaisedButton(
+              //   onPressed: () async {
+              //     final String cardToken = await StripeSource.addSource();
+              //     final card = await _addCard(cardToken);
 
-                  // Action to AddCard
-                  StoreProvider.of<AppState>(context)
-                      .dispatch(AddCardAction(card));
+              //     // Action to AddCard
+              //     StoreProvider.of<AppState>(context)
+              //         .dispatch(AddCardAction(card));
 
-                  // Action to update CardToken
-                  StoreProvider.of<AppState>(context)
-                      .dispatch(UpdateCardTokenAction(card['id']));
+              //     // Action to update CardToken
+              //     StoreProvider.of<AppState>(context)
+              //         .dispatch(UpdateCardTokenAction(card['id']));
 
-                  // Show operations in with a snackbar
-                  final snackbar = SnackBar(
-                    content: Text(
-                      'Card added',
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  );
-                  _scaffoldKey.currentState.showSnackBar(snackbar);
-                },
-                elevation: 8.0,
-                child: Text('Add Card'),
-              ),
+              //     // Show operations in with a snackbar
+              //     final snackbar = SnackBar(
+              //       content: Text(
+              //         'Card added',
+              //         style: TextStyle(color: Colors.green),
+              //       ),
+              //     );
+              //     _scaffoldKey.currentState.showSnackBar(snackbar);
+              //   },
+              //   elevation: 8.0,
+              //   child: Text('Add Card'),
+              // ),
               Expanded(
                 child: ListView(
                   children: state.cards

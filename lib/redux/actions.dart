@@ -8,6 +8,8 @@ import 'package:redux_thunk/redux_thunk.dart';
 import 'package:redux/redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+const endpoint = 'http://192.168.1.16:1337';
+
 /* User Actions */
 ThunkAction<AppState> getUserAction = (Store<AppState> store) async {
   final prefs = await SharedPreferences.getInstance();
@@ -38,7 +40,7 @@ class LogoutUserAction {
 
 /* Products Actions */
 ThunkAction<AppState> getProductsAction = (Store<AppState> store) async {
-  http.Response response = await http.get('http://localhost:1337/products');
+  http.Response response = await http.get('$endpoint/products');
   final List<dynamic> responseData = json.decode(response.body);
   List<Product> products = [];
   responseData.forEach((productData) {
@@ -71,7 +73,7 @@ ThunkAction<AppState> toggleCartProductAction(Product cartProduct) {
     store.dispatch(ToggleCartProductAction(updatedCartProducts));
     final List<String> cartProductsIds =
         updatedCartProducts.map((product) => product.id).toList();
-    await http.put('http://localhost:1337/carts/${user.cartId}',
+    await http.put('$endpoint/carts/${user.cartId}',
         body: {"products": json.encode(cartProductsIds)},
         headers: {"Authorization": "Bearer ${user.jwt}"});
   };
@@ -90,8 +92,7 @@ ThunkAction<AppState> getCartProductsAction = (Store<AppState> store) async {
     return;
   }
   final User user = User.fromJson(json.decode(storedUser));
-  http.Response response = await http.get(
-      "http://localhost:1337/carts/${user.cartId}",
+  http.Response response = await http.get("$endpoint/carts/${user.cartId}",
       headers: {'Authorization': 'Bearer ${user.jwt}'});
   final responseData = json.decode(response.body)['products'];
   List<Product> cartProducts = [];
@@ -111,8 +112,7 @@ class GetCartProductsAction {
 /* Card Actions */
 ThunkAction<AppState> getCardsAction = (Store<AppState> store) async {
   final String customerId = store.state.user.customerId;
-  http.Response response =
-      await http.get('http://localhost:1337/card?$customerId');
+  http.Response response = await http.get('$endpoint/card?$customerId');
   final responseData = json.decode(response.body);
   store.dispatch(GetCardsAction(responseData));
 };
