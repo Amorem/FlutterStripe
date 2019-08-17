@@ -118,7 +118,20 @@ ThunkAction<AppState> getCardsAction = (Store<AppState> store) async {
 };
 
 class GetCardsAction {
-  List<dynamic> _cards;
+  final List<dynamic> _cards;
   List<dynamic> get cards => this._cards;
   GetCardsAction(this._cards);
+}
+
+class AddCardAction {
+  final dynamic _card;
+  dynamic get card => this._card;
+  AddCardAction(this._card);
+}
+
+/* CardToken Actions */
+class UpdateCardTokenAction {
+  final String _cardToken;
+  String get cardToken => this._cardToken;
+  UpdateCardTokenAction(this._cardToken);
 }
