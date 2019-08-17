@@ -122,7 +122,8 @@ class _LoginPageState extends State<LoginPage> {
       _isSubmitting = true;
     });
 
-    http.Response response = await http.post('http://localhost:1337/auth/local',
+    http.Response response = await http.post(
+        'http://192.168.1.16:1337/auth/local',
         body: {'identifier': _email, 'password': _password});
 
     final responseData = json.decode(response.body);

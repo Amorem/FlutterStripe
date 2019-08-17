@@ -52,6 +52,8 @@ class MyApp extends StatelessWidget {
           RegisterPage.routeName: (BuildContext context) => RegisterPage(),
           CartPage.routeName: (BuildContext context) => CartPage(onInit: () {
                 StoreProvider.of<AppState>(context).dispatch(getCardsAction);
+                StoreProvider.of<AppState>(context)
+                    .dispatch(getCardTokenAction);
               }),
         },
       ),

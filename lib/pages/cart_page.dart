@@ -123,22 +123,37 @@ class _CartPageState extends State<CartPage> {
                             ),
                           ),
                           title: Text(
-                              '${c['card']['exp_month']}/${c['card']['exp_year']}, ${c['card']['last4']}'),
-                          subtitle: Text(c['card']['brand']),
-                          trailing: FlatButton(
-                            child: Text(
-                              'Set as Primary',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.pink),
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                            ),
-                            onPressed: () {},
-                          ),
+                              '${c['exp_month']}/${c['exp_year']}, ${c['last4']}'),
+                          subtitle: Text(c['brand']),
+                          trailing: state.cardToken == c['id']
+                              ? Chip(
+                                  avatar: CircleAvatar(
+                                    backgroundColor: Colors.green,
+                                    child: Icon(
+                                      Icons.check_circle,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  label: Text('Primary Card'),
+                                )
+                              : FlatButton(
+                                  child: Text(
+                                    'Set as Primary',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.pink),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    StoreProvider.of<AppState>(context)
+                                        .dispatch(
+                                            UpdateCardTokenAction(c['id']));
+                                  },
+                                ),
                         )),
                       )
                       .toList(),

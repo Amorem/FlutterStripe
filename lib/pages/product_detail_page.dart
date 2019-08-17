@@ -19,7 +19,7 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String pictureUrl = 'http://localhost:1337${item.picture['url']}';
+    final String pictureUrl = 'http://192.168.1.16:1337${item.picture['url']}';
     final Orientation orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       key: _scaffoldKey,

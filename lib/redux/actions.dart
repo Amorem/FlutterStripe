@@ -1,12 +1,13 @@
 import 'dart:convert';
-import '../models/product.dart';
+
 import 'package:http/http.dart' as http;
+import 'package:redux/redux.dart';
+import 'package:redux_thunk/redux_thunk.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/app_state.dart';
+import '../models/product.dart';
 import '../models/user.dart';
-import 'package:redux_thunk/redux_thunk.dart';
-import 'package:redux/redux.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 const endpoint = 'http://192.168.1.16:1337';
 
@@ -134,4 +135,20 @@ class UpdateCardTokenAction {
   final String _cardToken;
   String get cardToken => this._cardToken;
   UpdateCardTokenAction(this._cardToken);
+}
+
+ThunkAction<AppState> getCardTokenAction = (Store<AppState> store) async {
+  final String jwt = store.state.user.jwt;
+  http.Response response = await http
+      .get('$endpoint/users/me', headers: {'Authorization': 'Bearer $jwt'});
+
+  final responseData = json.decode(response.body);
+  final String cardToken = responseData['card_token'];
+  store.dispatch(GetCardTokenAction(cardToken));
+};
+
+class GetCardTokenAction {
+  final String _cardToken;
+  String get cardToken => this._cardToken;
+  GetCardTokenAction(this._cardToken);
 }
