@@ -165,6 +165,103 @@ class _CartPageState extends State<CartPage> {
     return totalPrice.toStringAsFixed(2);
   }
 
+  Future _showCheckOutDialog(state) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          if (state.cards.length == 0) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Text('Add Card'),
+                  ),
+                  Icon(
+                    Icons.credit_card,
+                    size: 26.0,
+                  )
+                ],
+              ),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: [
+                    Text(
+                      'Provide a credit card before checking out',
+                      style: Theme.of(context).textTheme.body1,
+                    )
+                  ],
+                ),
+              ),
+            );
+          }
+          String cartSummary = '';
+          state.cartProducts.forEach((cartProduct) {
+            cartSummary += "| ${cartProduct.name}, \$${cartProduct.price}\n";
+          });
+          final primaryCard =
+              state.cards.singleWhere((card) => card['id'] == state.cardToken);
+          print(primaryCard);
+          return AlertDialog(
+            title: Text('Checkout'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: [
+                  Text(
+                    'CART ITEMS (${state.cartProducts.length})\n',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  Text(
+                    '$cartSummary',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  Text(
+                    'CARD DETAILS',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  Text(
+                    'Brand: ${primaryCard['brand']}',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  Text(
+                    'Card Number: ${primaryCard['last4']}',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  Text(
+                    'Expires On: ${primaryCard['exp_month']}/${primaryCard['exp_year']}\n',
+                    style: Theme.of(context).textTheme.body1,
+                  ),
+                  Text(
+                    'ORDER TOTAL: \$${calculateTotalPrice(state.cartProducts)}',
+                    style: Theme.of(context).textTheme.body1,
+                  )
+                ],
+              ),
+            ),
+            actions: [
+              FlatButton(
+                color: Colors.red,
+                child: Text(
+                  'Close',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () => Navigator.pop(context, false),
+              ),
+              RaisedButton(
+                color: Colors.green,
+                child: Text(
+                  'Checkout',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () => Navigator.pop(context, true),
+              ),
+            ],
+          );
+        }).then((value) => {
+          if (value == true) {print('checkout')}
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(
@@ -176,11 +273,13 @@ class _CartPageState extends State<CartPage> {
             child: Scaffold(
               floatingActionButton: state.cartProducts.length > 0
                   ? FloatingActionButton(
+                      backgroundColor: Colors.deepOrange,
                       child: Icon(
                         Icons.local_atm,
                         size: 30,
+                        color: Colors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: () => _showCheckOutDialog(state),
                     )
                   : Text(''),
               appBar: AppBar(
