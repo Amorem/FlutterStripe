@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "axios": "latest",
+    "stripe": "latest",
     "lodash": "^4.17.5",
     "strapi": "3.0.0-alpha.26.2",
     "strapi-utils": "3.0.0-alpha.26.2",
