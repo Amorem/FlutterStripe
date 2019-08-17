@@ -157,6 +157,14 @@ class _CartPageState extends State<CartPage> {
     return (Text('Orders'));
   }
 
+  String calculateTotalPrice(cartProducts) {
+    double totalPrice = 0.0;
+    cartProducts.forEach((cartProduct) {
+      totalPrice += cartProduct.price;
+    });
+    return totalPrice.toStringAsFixed(2);
+  }
+
   @override
   Widget build(BuildContext context) {
     return StoreConnector<AppState, AppState>(
@@ -176,7 +184,8 @@ class _CartPageState extends State<CartPage> {
                     )
                   : Text(''),
               appBar: AppBar(
-                title: Text('Cart Page'),
+                title: Text(
+                    'Summary: ${state.cartProducts.length} items | \$${calculateTotalPrice(state.cartProducts)}'),
                 bottom: TabBar(
                   labelColor: Colors.deepOrange[600],
                   unselectedLabelColor: Colors.black,
