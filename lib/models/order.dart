@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class Order {
   final double amount;
-  final String createdAt;
+  final DateTime createdAt;
   final List<dynamic> products;
 
   Order(
@@ -13,7 +13,7 @@ class Order {
   factory Order.fromJson(json) {
     return Order(
         amount: json['amount'].toDouble(),
-        createdAt: json['createdAt'],
+        createdAt: DateTime.parse(json['createdAt']),
         products: json['products']);
   }
 }

@@ -2,15 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import '../models/order.dart';
 import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:intl/intl.dart';
 //import 'package:stripe_payment/stripe_payment.dart';
 
 import '../models/app_state.dart';
 import '../models/user.dart';
 import '../widgets/product_item.dart';
 import '../redux/actions.dart';
+import '../models/order.dart';
 
 class CartPage extends StatefulWidget {
   static const routeName = '/cart';
@@ -162,7 +163,8 @@ class _CartPageState extends State<CartPage> {
           ? state.orders
               .map<Widget>((order) => ListTile(
                     title: Text('\$${order.amount}'),
-                    subtitle: Text(order.createdAt),
+                    subtitle: Text(DateFormat('MMM dd, yyyy - kk:mm')
+                        .format(order.createdAt)),
                     leading: CircleAvatar(
                       backgroundColor: Colors.green,
                       child: Icon(

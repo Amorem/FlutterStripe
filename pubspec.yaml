@@ -16,6 +16,7 @@ dependencies:
   redux_logging: ^0.3.0
   badges: ^1.1.0
   modal_progress_hud: ^0.1.3
+  intl: ^0.15.8
 
 dev_dependencies:
   flutter_test:
