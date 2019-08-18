@@ -6,6 +6,7 @@ import 'package:redux_thunk/redux_thunk.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/app_state.dart';
+import '../models/order.dart';
 import '../models/product.dart';
 import '../models/user.dart';
 
@@ -110,6 +111,20 @@ class GetCartProductsAction {
   GetCartProductsAction(this._cartProducts);
 }
 
+ThunkAction<AppState> clearCartProductsAction = (Store<AppState> store) async {
+  final User user = store.state.user;
+  await http.put('$endpoint/carts/${user.cartId}',
+      body: {"products": json.encode([])},
+      headers: {'Authorizarion': 'Bearer {user.jwt}'});
+  store.dispatch(ClearCartProductsAction(List(0)));
+};
+
+class ClearCartProductsAction {
+  final List<Product> _cartProducts;
+  List<Product> get cartProducts => this._cartProducts;
+  ClearCartProductsAction(this._cartProducts);
+}
+
 /* Card Actions */
 ThunkAction<AppState> getCardsAction = (Store<AppState> store) async {
   final String customerId = store.state.user.customerId;
@@ -151,4 +166,12 @@ class GetCardTokenAction {
   final String _cardToken;
   String get cardToken => this._cardToken;
   GetCardTokenAction(this._cardToken);
+}
+
+/* Orders Actions */
+
+class AddOrderAction {
+  final Order _order;
+  Order get order => this._order;
+  AddOrderAction(this._order);
 }

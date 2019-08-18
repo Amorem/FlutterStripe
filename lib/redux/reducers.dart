@@ -1,3 +1,5 @@
+import '../models/order.dart';
+
 import './actions.dart';
 import '../models/app_state.dart';
 import '../models/product.dart';
@@ -10,6 +12,7 @@ AppState appReducer(AppState state, dynamic action) {
     cartProducts: cartProductsReducer(state.cartProducts, action),
     cards: cardsReducer(state.cards, action),
     cardToken: cardTokenReducer(state.cardToken, action),
+    orders: ordersReducer(state.orders, action),
   );
 }
 
@@ -34,6 +37,8 @@ List<Product> cartProductsReducer(List<Product> cartProducts, dynamic action) {
     return action.cartProducts;
   } else if (action is ToggleCartProductAction) {
     return action.cartProducts;
+  } else if (action is ClearCartProductsAction) {
+    return action.cartProducts;
   }
   return cartProducts;
 }
@@ -54,4 +59,11 @@ String cardTokenReducer(String cardToken, dynamic action) {
     return action.cardToken;
   }
   return cardToken;
+}
+
+List<Order> ordersReducer(List<Order> orders, dynamic action) {
+  if (action is AddOrderAction) {
+    return List.from(orders)..add(action.order);
+  }
+  return orders;
 }

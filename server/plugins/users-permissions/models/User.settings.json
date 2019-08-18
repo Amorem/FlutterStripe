@@ -61,6 +61,10 @@
     },
     "card_token": {
       "type": "string"
+    },
+    "orders": {
+      "collection": "order",
+      "via": "user"
     }
   },
   "collectionName": "users-permissions_user"

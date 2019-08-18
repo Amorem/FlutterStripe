@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import '../models/order.dart';
 import 'package:http/http.dart' as http;
+import 'package:modal_progress_hud/modal_progress_hud.dart';
 //import 'package:stripe_payment/stripe_payment.dart';
 
 import '../models/app_state.dart';
@@ -23,6 +25,7 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool _isSubmitting = false;
 
   void initState() {
     super.initState();
@@ -153,8 +156,42 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _ordersTab() {
-    return (Text('Orders'));
+  Widget _ordersTab(state) {
+    return ListView(
+      children: state.orders.length > 0
+          ? state.orders
+              .map<Widget>((order) => ListTile(
+                    title: Text('\$${order.amount}'),
+                    subtitle: Text(order.createdAt),
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.green,
+                      child: Icon(
+                        Icons.attach_money,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ))
+              .toList()
+          : [
+              Padding(
+                padding: EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.close,
+                      size: 60.0,
+                    ),
+                    Text(
+                      'No orders yet',
+                      style: Theme.of(context).textTheme.title,
+                    )
+                  ],
+                ),
+              )
+            ],
+    );
   }
 
   String calculateTotalPrice(cartProducts) {
@@ -257,8 +294,67 @@ class _CartPageState extends State<CartPage> {
               ),
             ],
           );
-        }).then((value) => {
-          if (value == true) {print('checkout')}
+        }).then((value) async {
+      _checkOutCartProduct() async {
+        // Create new order data in Strapi and charge card with Stripe
+        http.Response response =
+            await http.post('http://192.168.1.16:1337/orders', body: {
+          "amount": calculateTotalPrice(state.cartProducts),
+          "products": json.encode(state.cartProducts),
+          "source": state.cardToken,
+          "customer": state.user.customerId
+        }, headers: {
+          'Authorization': 'Bearer ${state.user.jwt}'
+        });
+        final responseData = json.decode(response.body);
+        return responseData;
+      }
+
+      if (value == true) {
+        // Show loading Spinner
+        setState(() {
+          _isSubmitting = true;
+        });
+
+        // Checkout cart products
+        final newOrderData = await _checkOutCartProduct();
+
+        // Create a new order instance
+        Order newOrder = Order.fromJson(newOrderData);
+
+        // Pass order instance to a new action (AddOrderAction)
+        StoreProvider.of<AppState>(context).dispatch(AddOrderAction(newOrder));
+
+        // Clear out cart products
+        StoreProvider.of<AppState>(context).dispatch(clearCartProductsAction);
+
+        // Hide loading Spinner
+        setState(() {
+          _isSubmitting = false;
+        });
+
+        // Show success dialog
+        _showSuccessDialog();
+      }
+    });
+  }
+
+  Future _showSuccessDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: Text('Success !'),
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'Order sucessful \n\nCheck your email for a receipt of your purchase\n\nOrder summary will appear in your orders tab',
+                  style: Theme.of(context).textTheme.body1,
+                ),
+              )
+            ],
+          );
         });
   }
 
@@ -267,46 +363,49 @@ class _CartPageState extends State<CartPage> {
     return StoreConnector<AppState, AppState>(
         converter: (store) => store.state,
         builder: (_, state) {
-          return DefaultTabController(
-            length: 3,
-            initialIndex: 0,
-            child: Scaffold(
-              floatingActionButton: state.cartProducts.length > 0
-                  ? FloatingActionButton(
-                      backgroundColor: Colors.deepOrange,
-                      child: Icon(
-                        Icons.local_atm,
-                        size: 30,
-                        color: Colors.white,
+          return ModalProgressHUD(
+            inAsyncCall: _isSubmitting,
+            child: DefaultTabController(
+              length: 3,
+              initialIndex: 0,
+              child: Scaffold(
+                floatingActionButton: state.cartProducts.length > 0
+                    ? FloatingActionButton(
+                        backgroundColor: Colors.deepOrange,
+                        child: Icon(
+                          Icons.local_atm,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => _showCheckOutDialog(state),
+                      )
+                    : Text(''),
+                appBar: AppBar(
+                  title: Text(
+                      'Summary: ${state.cartProducts.length} items | \$${calculateTotalPrice(state.cartProducts)}'),
+                  bottom: TabBar(
+                    labelColor: Colors.deepOrange[600],
+                    unselectedLabelColor: Colors.black,
+                    tabs: <Widget>[
+                      Tab(
+                        icon: Icon(Icons.shopping_cart),
                       ),
-                      onPressed: () => _showCheckOutDialog(state),
-                    )
-                  : Text(''),
-              appBar: AppBar(
-                title: Text(
-                    'Summary: ${state.cartProducts.length} items | \$${calculateTotalPrice(state.cartProducts)}'),
-                bottom: TabBar(
-                  labelColor: Colors.deepOrange[600],
-                  unselectedLabelColor: Colors.black,
-                  tabs: <Widget>[
-                    Tab(
-                      icon: Icon(Icons.shopping_cart),
-                    ),
-                    Tab(
-                      icon: Icon(Icons.credit_card),
-                    ),
-                    Tab(
-                      icon: Icon(Icons.receipt),
-                    )
+                      Tab(
+                        icon: Icon(Icons.credit_card),
+                      ),
+                      Tab(
+                        icon: Icon(Icons.receipt),
+                      )
+                    ],
+                  ),
+                ),
+                body: TabBarView(
+                  children: <Widget>[
+                    _cartTab(state),
+                    _cardsTab(state),
+                    _ordersTab(state)
                   ],
                 ),
-              ),
-              body: TabBarView(
-                children: <Widget>[
-                  _cartTab(state),
-                  _cardsTab(state),
-                  _ordersTab()
-                ],
               ),
             ),
           );
