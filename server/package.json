@@ -22,7 +22,7 @@
     "axios": "latest",
     "stripe": "latest",
     "uuid": "latest",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.19",
     "strapi": "3.0.0-alpha.26.2",
     "strapi-utils": "3.0.0-alpha.26.2",
     "strapi-hook-mongoose": "3.0.0-alpha.26.2"
